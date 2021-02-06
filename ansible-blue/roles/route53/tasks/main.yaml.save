@@ -16,23 +16,22 @@
   with_items: "{{ myFacts.instances }}"
   ignore_errors: True
 
+- name: Add each EC2 instance to the ELB
+  ec2_elb:
+    state: present
+    enable_availability_zone: no
+    ec2_elbs: "blue-lb"
+    region: us-east-2
+    instance_id: "{{ item.instance_id }}"
+  with_items: "{{ myFacts.instances }}"
+
 - name: Register an instance target to a target group
   elb_target:
     target_group_name: devops-server-blue
     target_id: "{{ item.instance_id }}"
     state: present
-    region: us-east-2
-  with_items: "{{ myFacts.instances }}" 
-
-
-#- name: Add each EC2 instance to the ELB
-#  ec2_elb:
-#    state: present
-#    enable_availability_zone: no
-#    ec2_elbs: "blue-lb"
-#    region: us-east-2
-#    instance_id: "{{ item.instance_id }}"
-#  with_items: "{{ myFacts.instances }}"
+    reg
+  with_items: "{{ myFacts.instances }}"
 
 - name: change route53
   route53:
@@ -40,7 +39,6 @@
     zone: devops.com
     record: www.devops.com
     failover: PRIMARY
-    identifier: blue-server
     type: CNAME
     ttl: 30
     private_zone: yes
