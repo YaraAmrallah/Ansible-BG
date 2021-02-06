@@ -4,16 +4,16 @@
     region: us-east-2
     filters:
       "tag:application": green
-  register: myFacts
+  register: myFactsg
 
-- debug: var=myFacts
+- debug: var=myFactsg
 
 - name: Wait for servers to come online
   wait_for:
     host: "{{ item.public_ip_address }}"
     port: 80
     timeout: 180
-  with_items: "{{ myFacts.instances }}"
+  with_items: "{{ myFactsg.instances }}"
   ignore_errors: True
 
 - name: Register an instance target to a target group
@@ -22,7 +22,7 @@
     target_id: "{{ item.instance_id }}"
     state: present
     region: us-east-2
-  with_items: "{{ myFacts.instances }}" 
+  with_items: "{{ myFactsg.instances }}" 
 
 
 #- name: Add each EC2 instance to the ELB
@@ -39,8 +39,8 @@
     state: present
     zone: devops.com
     record: www.devops.com
-    failover: PRIMARY
-    identifier: green-server
+    failover: SECONDARY
+    identifier: blue-server
     type: CNAME
     ttl: 30
     private_zone: yes

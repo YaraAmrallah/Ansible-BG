@@ -1,6 +1,6 @@
 ---
 - name: Deploy
-  hosts: tag_application_green
+  hosts: green
   gather_facts: false
   vars:
     ansible_python_interpreter: /usr/bin/python3
